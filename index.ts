@@ -4,7 +4,13 @@ import { convertToObject } from "./src"
 
 const data_store = new Map()
 
-fs.readFile("input2.txt", "utf8", (err, data) => {
+interface response {
+  id: string
+  customer_id: string
+  accepted?: boolean
+}
+
+fs.readFile("input.txt", "utf8", (err, data) => {
   if (err) {
     console.log("Error reading file from the disk")
     return
@@ -16,39 +22,103 @@ fs.readFile("input2.txt", "utf8", (err, data) => {
   lines.pop()
 
   const new_array = []
+
+  //Creating a map of the dates and the weeks
+
   lines.forEach((line) => {
     const nl = JSON.parse(line)
 
     new_array.push(nl)
 
-    //Converting the time to unix value
-    const date = moment(nl.time, "YYYY-MM-DD").format("X")
+    const dateValue = moment(nl.time, "YYYY-MM-DD")
 
-    /**
-     * - check if user has a record in that date
-     * - add all transactions for that user in that date in another map inside
-     */
+    //Converting the time to unix value
+    moment().isoWeekday()
+    const date = dateValue.format("X")
 
     data_store[date] = new Map()
+    data_store[date]["week"] = dateValue.isoWeek()
   })
 
-  //Make
-  new_array.forEach((load) => {
-    const date = moment(load.time, "YYYY-MM-DD").format("X")
-
-    data_store[date][load.customer_id] = new Map()
-  })
+  //Setting balances for each record
 
   new_array.forEach((load) => {
     const date = moment(load.time, "YYYY-MM-DD").format("X")
+    const { customer_id } = load
 
-    data_store[date][load.customer_id][load.id] = load
+    data_store[date][customer_id] = new Map()
+    data_store[date][customer_id]["daily_deposit_balance"] = 0
+    data_store[date][customer_id]["number_of_deposits"] = 0
+    data_store[date][customer_id]["weekly_deposit_balance"] = 0
+  })
 
-    console.log(
-      `customer ${load.customer_id}: `,
-      data_store[date][load.customer_id]
-    )
+  //Main
 
-    console.log("----------")
+  let current_week: number = 0
+
+  new_array.forEach((load, index) => {
+    const date = moment(load.time, "YYYY-MM-DD").format("X")
+
+    const { id, customer_id, load_amount, time } = load
+
+    const amount = parseFloat(load_amount.substring(1))
+
+    //Current Values
+    const new_week = data_store[date]["week"]
+
+    let daily_deposits = data_store[date][customer_id]["number_of_deposits"]
+    let daily_deposit_balance =
+      data_store[date][customer_id]["daily_deposit_balance"]
+    let weekly_deposit_balance =
+      data_store[date][customer_id]["weekly_deposit_balance"]
+
+    daily_deposit_balance += amount
+    daily_deposits += 1
+
+    if (new_week != current_week) {
+      current_week = new_week
+      weekly_deposit_balance = amount
+    } else {
+      weekly_deposit_balance += amount
+    }
+
+    const response: response = {
+      id,
+      customer_id,
+    }
+
+    if (
+      daily_deposit_balance > 5000 ||
+      daily_deposits > 3 ||
+      weekly_deposit_balance > 20000
+    ) {
+      response.accepted = false
+    } else {
+      data_store[date][customer_id][id] = load
+      data_store[date][customer_id]["number_of_deposits"] = daily_deposits
+      data_store[date][customer_id][
+        "daily_deposit_balance"
+      ] = daily_deposit_balance
+      data_store[date][customer_id][
+        "weekly_deposit_balance"
+      ] = weekly_deposit_balance
+
+      response.accepted = true
+    }
+
+    console.log(`${index + 1}: `, response)
+
+    // console.log(
+    //   `customer ${customer_id} Balance: `,
+    //   data_store[date][customer_id]["daily_deposit_balance"]
+    // )
+    // console.log(
+    //   `customer ${customer_id} Weekly Balance: `,
+    //   data_store[date][customer_id]["weekly_deposit_balance"]
+    // )
+
+    // console.log("Current week: ", current_week)
+
+    // console.log("----------")
   })
 })
