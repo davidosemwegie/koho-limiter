@@ -1,0 +1,14 @@
+{
+  "compilerOptions": {
+    "module": "commonjs",
+    "esModuleInterop": true,
+    "target": "es2017",
+    "moduleResolution": "node",
+    "sourceMap": true,
+    "outDir": "lib",
+    "lib": ["es6", "DOM"],
+    "allowJs": true,
+    "rootDir": "."
+  },
+  "exclude": ["node_modules"]
+}
