@@ -1,4 +1,4 @@
 {
     "ext": "ts",
-    "exec": "ts-node index.ts"
+    "exec": "rm -rf output.txt && ts-node index.ts"
 }

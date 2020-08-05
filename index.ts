@@ -5,13 +5,7 @@ import { limitCheck, generateResponse } from "./src"
 
 const data_store = new Map()
 
-interface response {
-  id: string
-  customer_id: string
-  accepted?: boolean
-}
-
-fs.readFile("input2.txt", "utf8", (err, data: any) => {
+fs.readFile("input.txt", "utf8", (err, data: any) => {
   if (err) {
     console.log("Error reading file from the disk")
     return
@@ -84,6 +78,6 @@ fs.readFile("input2.txt", "utf8", (err, data: any) => {
       ] = weekly_deposit_balance
     }
 
-    generateResponse(id, customer_id, accepted)
+    generateResponse({ id, customer_id, accepted })
   })
 })
