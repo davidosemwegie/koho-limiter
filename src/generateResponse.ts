@@ -15,4 +15,6 @@ export const generateResponse = async (data: response) => {
     if (err) throw err
   })
   console.log(response)
+
+  return res
 }

@@ -6,7 +6,8 @@
   "scripts": {
     "test": "jest --detectOpenHandles",
     "build": "rm -rf lib && tsc",
-    "start": "ts-node-dev --respawn index.ts"
+    "start": "ts-node-dev --respawn app.ts",
+    "dev": "rm -rf output.txt && npx ts-node app.ts"
   },
   "keywords": [],
   "author": "",

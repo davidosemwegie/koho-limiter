@@ -1,3 +1,3 @@
 import velocityFileScanner from "./src/velocityLimitFileScanner"
 
-export default velocityFileScanner
+velocityFileScanner("input.txt")
