@@ -22,5 +22,11 @@ npx ts-node app.ts
 ```
 After the command has been run, there should now be an output.txt in your root file directory. 
 
+## Testing
+To run the testing script, type in the following command in your terminal / command line
+```bash
+npm run test
+```
+
 ## Acknowledgments
 Thanks for taking the time to interview me. I really appreciate it and I look forward to the next step in the interview process. Please feel free to reach out if there are any questions regarding the assignment.
